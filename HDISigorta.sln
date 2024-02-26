@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HDISigorta.Infrastructure", "src\Infrastructure\HDISigorta.Infrastructure\HDISigorta.Infrastructure.csproj", "{880F1534-421B-48EA-B88C-BAA921E41BA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HDISigorta.Persistence", "src\Infrastructure\HDISigorta.Persistence\HDISigorta.Persistence.csproj", "{908BDAE1-1425-4006-A344-3B06C4C07858}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{880F1534-421B-48EA-B88C-BAA921E41BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{880F1534-421B-48EA-B88C-BAA921E41BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{880F1534-421B-48EA-B88C-BAA921E41BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{908BDAE1-1425-4006-A344-3B06C4C07858}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{908BDAE1-1425-4006-A344-3B06C4C07858}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{908BDAE1-1425-4006-A344-3B06C4C07858}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{908BDAE1-1425-4006-A344-3B06C4C07858}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{CE9A850B-D78D-4A57-8238-B19E57D917FF} = {93FE9F6D-EAAA-46F4-8AAF-980CBC2D43D3}
 		{C02A6248-4619-4026-A1DD-9FDCF6F83AA7} = {6AC96529-35F9-4E7C-9A78-E6A837643E7E}
 		{880F1534-421B-48EA-B88C-BAA921E41BA1} = {C02A6248-4619-4026-A1DD-9FDCF6F83AA7}
+		{908BDAE1-1425-4006-A344-3B06C4C07858} = {C02A6248-4619-4026-A1DD-9FDCF6F83AA7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8862AE11-690C-4484-AB72-647A46F8A32A}
