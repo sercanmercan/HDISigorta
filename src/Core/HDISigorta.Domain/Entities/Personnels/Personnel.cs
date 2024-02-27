@@ -8,8 +8,8 @@ namespace HDISigorta.Domain.Entities.Personnels
     public class Personnel : BaseEntity<Guid>
     {
         public DepartmentEnum DepartmentType { get; set; }
-        public ICollection<AppUser> AppUsers { get; set; }
-        [ForeignKey("UserId")]
+        public AppUser AppUsers { get; set; }
+        [ForeignKey(nameof(UserId))]
         public Guid UserId { get; set; }
     }
 }
