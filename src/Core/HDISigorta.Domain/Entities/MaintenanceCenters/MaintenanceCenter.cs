@@ -1,12 +1,13 @@
-﻿using HDISigorta.Domain.Entities.Identities;
+﻿using HDISigorta.Domain.Entities.Common;
+using HDISigorta.Domain.Entities.Identities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HDISigorta.Domain.Entities.MaintenanceCenters
 {
-    public class MaintenanceCenter
+    public class MaintenanceCenter : BaseEntity<Guid>
     {
-        public ICollection<AppUser> AppUsers { get; set; }
-        [ForeignKey("UserId")]
+        public AppUser AppUsers { get; set; }
+        [ForeignKey(nameof(UserId))]
         public Guid UserId { get; set; }
     }
 }
