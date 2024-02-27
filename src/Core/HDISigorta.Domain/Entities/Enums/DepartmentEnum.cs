@@ -13,9 +13,6 @@ namespace HDISigorta.Domain.Entities.Enums
         Dealer = 1,
 
         [Description("tamirci")]
-        Maintenance = 2,
-
-        [Description("IT")]
-        IT = 3
+        Maintenance = 2
     }
 }

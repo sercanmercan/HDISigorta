@@ -13,9 +13,6 @@ namespace HDISigorta.Domain.Entities.Enums
         SoldOut = 1,
 
         [Description("stokta var")]
-        InStock = 2,
-
-        [Description("tamirde")]
-        InRepair = 3
+        InStock = 2
     }
 }
