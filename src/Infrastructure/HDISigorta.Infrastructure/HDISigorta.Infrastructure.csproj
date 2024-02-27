@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\HDISigorta.Application\HDISigorta.Application.csproj" />
+  </ItemGroup>
+
 </Project>
