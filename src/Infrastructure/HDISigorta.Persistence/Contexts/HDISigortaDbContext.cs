@@ -7,16 +7,12 @@ using HDISigorta.Domain.Entities.Maintenance;
 using HDISigorta.Domain.Entities.MaintenanceCenters;
 using HDISigorta.Domain.Entities.Personnels;
 using HDISigorta.Domain.Entities.Products;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HDISigorta.Persistence.Contexts
 {
-    public class HDISigortaDbContext : DbContext
+    public class HDISigortaDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public HDISigortaDbContext(DbContextOptions options) : base(options)
         {
