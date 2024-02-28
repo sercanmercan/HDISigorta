@@ -25,7 +25,7 @@ namespace HDISigorta.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginUserRequestDto loginUserRequestDto)
+        public async Task<IActionResult> LoginAsync(LoginUserRequestDto loginUserRequestDto)
         {
             LoginUserResponseDto response = await _authRepository.LoginUser(loginUserRequestDto);
             return Ok(response);
