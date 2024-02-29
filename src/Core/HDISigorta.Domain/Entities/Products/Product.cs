@@ -11,13 +11,19 @@ namespace HDISigorta.Domain.Entities.Products
         public double BuyingPrice { get; set; }
         public double SellingPrice { get; set; }
         public ProductStatusEnum ProductStatus { get; set; }
-        public bool IsSold { get; set; }
+        //public bool IsSold { get; set; }
 
         //Değişen parçası var mı
         public bool IsChangedPart { get; set; }
 
         //Tamir edilen parçası var mı
         public bool IsRepairedPart { get; set; }
+
+        //Değişen parçası maliyeti
+        public double ChangedPartCost { get; set; }
+
+        //Tamir edilen parça maliyeti
+        public double RepairedPartCost { get; set; }
 
         //Satış zamanı
         public DateTime? SellingTime { get; set; }
@@ -33,6 +39,9 @@ namespace HDISigorta.Domain.Entities.Products
 
         //Kar marjı
         public double ProfitMargin  { get; set; }
+
+        //Kar maliyeti
+        public double ProfitCost { get; set; }
 
         //Garanti risk maliyeti
         public double RiskCost { get; set; }
