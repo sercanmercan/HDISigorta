@@ -1,15 +1,4 @@
-﻿using HDISigorta.Domain.Entities.Agreements;
-using HDISigorta.Domain.Entities.Enums;
-using HDISigorta.Domain.Entities.Products;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HDISigorta.Application.Dtos.Products
+﻿namespace HDISigorta.Application.Dtos.Products
 {
     public class CreateProductRequestDto
     {
