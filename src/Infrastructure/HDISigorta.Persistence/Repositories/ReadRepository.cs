@@ -19,7 +19,7 @@ namespace HDISigorta.Persistence.Repositories
 
         public IQueryable<T> GetAll(bool tracking = true)
         {
-            var query = Table.AsQueryable();
+            var query = Table.Where(x=>!x.IsDeleted).AsQueryable();
             if (!tracking)
                 query.AsNoTracking();
             return query;
@@ -41,7 +41,7 @@ namespace HDISigorta.Persistence.Repositories
             var query = Table.AsQueryable();
             if (!tracking)
                 query = Table.AsNoTracking();
-            return await query.FirstOrDefaultAsync(data => data.Id == Id);
+            return await query.FirstOrDefaultAsync(data => data.Id == Id && !data.IsDeleted);
         }
     }
 }
