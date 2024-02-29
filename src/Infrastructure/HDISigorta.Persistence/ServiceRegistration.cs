@@ -1,10 +1,14 @@
-﻿using HDISigorta.Application.Repositories.AppUser;
+﻿using HDISigorta.Application.Repositories.Agreements;
+using HDISigorta.Application.Repositories.AppUser;
+using HDISigorta.Application.Repositories.Products;
 using HDISigorta.Domain.Entities.Identities;
 using HDISigorta.Persistence.Contexts;
+using HDISigorta.Persistence.Repositories.Agreements;
 using HDISigorta.Persistence.Repositories.AppUser;
+using HDISigorta.Persistence.Repositories.Product;
+using HDISigorta.Persistence.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace HDISigorta.Persistence
 {
@@ -24,6 +28,10 @@ namespace HDISigorta.Persistence
             }).AddEntityFrameworkStores<HDISigortaDbContext>();
 
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<IAgreementReadRepository, AgreementReadRepository>();
+            services.AddScoped<IAgreementWriteRepository, AgreementWriteRepository>();
         }
     }
 }
