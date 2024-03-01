@@ -59,12 +59,16 @@ namespace HDISigorta.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(CreateAgreementRequestDto request)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
+
             try
             {
                 if (!request.IsCheckValid())
                 {
-                    resultErrorMessage = "Lütfen zorunlu alanları doldurunuz.";
+                    resultErrorMessage = config["Exception:RequiredArea"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
@@ -80,7 +84,7 @@ namespace HDISigorta.API.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
 
@@ -95,13 +99,16 @@ namespace HDISigorta.API.Controllers
         [HttpPut]
         public async Task<bool> UpdateAsync(UpdateAgreementRequestDto request)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
 
             try
             {
                 if (!request.IsCheckValid())
                 {
-                    resultErrorMessage = "Lütfen bilgileri giriniz.";
+                    resultErrorMessage = config["Exception:RequiredArea"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
@@ -109,7 +116,7 @@ namespace HDISigorta.API.Controllers
 
                 if (agreement is null)
                 {
-                    resultErrorMessage = "Böyle bir ürün yok.";
+                    resultErrorMessage = config["Exception:NoProduct"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
@@ -123,7 +130,7 @@ namespace HDISigorta.API.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
 
@@ -137,7 +144,10 @@ namespace HDISigorta.API.Controllers
         [HttpDelete("{id}")]
         public async Task<bool> DeleteAgreementAsync(Guid id)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
 
             try
             {
@@ -145,7 +155,7 @@ namespace HDISigorta.API.Controllers
 
                 if (agreement is null)
                 {
-                    resultErrorMessage = "Böyle bir ürün yok.";
+                    resultErrorMessage = config["Exception:NoProduct"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
@@ -157,7 +167,7 @@ namespace HDISigorta.API.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
     }
