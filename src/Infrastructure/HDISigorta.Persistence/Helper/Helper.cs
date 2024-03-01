@@ -1,8 +1,9 @@
-﻿using HDISigorta.Application.Dtos.Helper;
+﻿using HDISigorta.Application.Abstractions.Helper;
+using HDISigorta.Application.Dtos.Helper;
 
 namespace HDISigorta.Persistence.Helper
 {
-    public class Helper
+    public class Helper : IHelper
     {
         #region ratio
         /// <summary>
@@ -12,7 +13,7 @@ namespace HDISigorta.Persistence.Helper
         public async Task<double> CalculateProfitabilityRatio(ProfitabilityRequestDto request)
         {
             // satış fiyatı - (alış fiyatı + tamir yada sorun çıkan ücreti) yüzdelik hali
-            double costPrice = request.BuyingPrice + request.RepairOrChangedPartCost;
+            double costPrice = request.BuyingPrice + request.TotalRepairOrChangedPartCost;
             return ((request.SellingPrice - costPrice) / costPrice) * 100;
         }
 
@@ -22,8 +23,9 @@ namespace HDISigorta.Persistence.Helper
         /// <returns></returns>
         public async Task<double> CalculateRiskCostRatio(RiskCostRequestDto request)
         {
+            // (toplam tamir masrafı / satış fiyatı) * 100
             // (Risk olasılığı/ gerçekleşme durumunda ortaya çıkacak maliyet)
-            return request.RiskProbability / request.Cost;
+            return ((request.TotalRepairOrChangedPartCost / request.SellingPrice) * 100) / request.TotalRepairOrChangedPartCost;
         }
         #endregion
 
@@ -35,7 +37,7 @@ namespace HDISigorta.Persistence.Helper
         public async Task<double> CalculateProfitabilityCost(ProfitabilityRequestDto request)
         {
             // satış fiyatı - (alış fiyatı + tamir yada sorun çıkan ücreti)
-            return request.SellingPrice - (request.BuyingPrice + request.RepairOrChangedPartCost);
+            return request.SellingPrice - (request.BuyingPrice + request.TotalRepairOrChangedPartCost);
         }
 
         #endregion

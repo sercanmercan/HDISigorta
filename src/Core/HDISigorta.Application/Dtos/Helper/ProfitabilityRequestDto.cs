@@ -1,9 +1,7 @@
 ﻿namespace HDISigorta.Application.Dtos.Helper
 {
-    public class ProfitabilityRequestDto
+    public class ProfitabilityRequestDto : RiskCostRequestDto
     {
-        public double SellingPrice { get; set; }
         public double BuyingPrice { get; set; }
-        public double RepairOrChangedPartCost { get; set; }
     }
 }
