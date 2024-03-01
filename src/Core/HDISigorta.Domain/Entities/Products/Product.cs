@@ -19,11 +19,8 @@ namespace HDISigorta.Domain.Entities.Products
         //Tamir edilen parçası var mı
         public bool IsRepairedPart { get; set; }
 
-        //Değişen parçası maliyeti
-        public double ChangedPartCost { get; set; }
-
-        //Tamir edilen parça maliyeti
-        public double RepairedPartCost { get; set; }
+        //Değişen veya tamir edilen parça maliyeti
+        public double RepairOrChangedPartCost { get; set; }
 
         //Satış zamanı
         public DateTime? SellingTime { get; set; }
@@ -35,15 +32,15 @@ namespace HDISigorta.Domain.Entities.Products
         public Agreement Agreement { get; set; }
         [ForeignKey(nameof(AgreementId))]
         public Guid AgreementId { get; set; }
-        public ICollection<ProductHistory> ProductHistories { get; set; }
+        public virtual ICollection<ProductHistory> ProductHistories { get; set; } = new List<ProductHistory>();
 
         //Kar marjı
-        public double ProfitMargin  { get; set; }
+        //public double ProfitMargin  { get; set; }
 
-        //Kar maliyeti
-        public double ProfitCost { get; set; }
+        ////Kar maliyeti
+        //public double ProfitCost { get; set; }
 
-        //Garanti risk maliyeti
-        public double RiskCost { get; set; }
+        ////Garanti risk maliyeti
+        //public double RiskCost { get; set; }
     }
 }
