@@ -6,6 +6,7 @@ using HDISigorta.Application.Dtos.Products;
 using HDISigorta.Application.Exceptions;
 using HDISigorta.Application.Repositories.Products;
 using HDISigorta.Domain.Entities.Products;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ using System.Linq;
 
 namespace HDISigorta.API.Controllers
 {
-    //[Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase

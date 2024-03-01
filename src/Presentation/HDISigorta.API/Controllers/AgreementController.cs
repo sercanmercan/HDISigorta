@@ -2,12 +2,13 @@
 using HDISigorta.Application.Dtos.Agreements;
 using HDISigorta.Application.Repositories.Agreements;
 using HDISigorta.Domain.Entities.Agreements;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HDISigorta.API.Controllers
 {
-    //[Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class AgreementController : ControllerBase
