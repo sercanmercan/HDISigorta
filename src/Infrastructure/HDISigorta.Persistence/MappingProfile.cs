@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using HDISigorta.Application.Dtos.Agreements;
+using HDISigorta.Application.Dtos.ProductHistory;
 using HDISigorta.Application.Dtos.Products;
 using HDISigorta.Domain.Entities.Agreements;
 using HDISigorta.Domain.Entities.Products;
+using System.Collections.Generic;
 
 namespace HDISigorta.Persistence
 {
@@ -15,6 +17,9 @@ namespace HDISigorta.Persistence
 
             CreateMap<AgreementResponseDto, Agreement>();
             CreateMap<Agreement, AgreementResponseDto>();
+
+            CreateMap<ProductHistory, GetProductHistoryByProductIdResponseDto>();
+            CreateMap<GetProductHistoryByProductIdResponseDto, ProductHistory>();
         }
     }
 }

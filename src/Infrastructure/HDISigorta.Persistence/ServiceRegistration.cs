@@ -1,5 +1,7 @@
-﻿using HDISigorta.Application.Repositories.Agreements;
+﻿using HDISigorta.Application.Abstractions.Helper;
+using HDISigorta.Application.Repositories.Agreements;
 using HDISigorta.Application.Repositories.AppUser;
+using HDISigorta.Application.Repositories.ProductHistory;
 using HDISigorta.Application.Repositories.Products;
 using HDISigorta.Domain.Entities.Identities;
 using HDISigorta.Persistence.Contexts;
@@ -32,6 +34,8 @@ namespace HDISigorta.Persistence
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
             services.AddScoped<IAgreementReadRepository, AgreementReadRepository>();
             services.AddScoped<IAgreementWriteRepository, AgreementWriteRepository>();
+            services.AddScoped<IHelper, Helper.Helper>();
+            services.AddScoped<IProductHistoryReadRepository, ProductHistoryReadRepository>();
         }
     }
 }
