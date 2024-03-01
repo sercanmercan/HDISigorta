@@ -42,7 +42,8 @@ namespace HDISigorta.Persistence.Contexts
                 _ = data.State switch
                 {
                     EntityState.Added => data.Entity.CreatedDate = DateTime.Now,
-                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.Now
+                    EntityState.Modified => data.Entity.UpdatedDate = DateTime.Now,
+                    _=> data.Entity.UpdatedDate = DateTime.Now
                 };
             }
             return await base.SaveChangesAsync(cancellationToken);
