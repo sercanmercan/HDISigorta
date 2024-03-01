@@ -5,6 +5,7 @@ using HDISigorta.Application.Dtos.AppUser.Token;
 using HDISigorta.Application.Exceptions;
 using HDISigorta.Application.Repositories.AppUser;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace HDISigorta.Persistence.Repositories.AppUser
 {
@@ -39,7 +40,11 @@ namespace HDISigorta.Persistence.Repositories.AppUser
                     Message = "Kullanıcı basariyla olusturulmustur."
                 };
 
-            throw new UserCreateFailedException();
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("exception.json", optional: true, reloadOnChange: true)
+            .Build();
+
+            throw new UserCreateFailedException(config["Exception:UserCreateFailedException"]);
         }
 
         public async Task<LoginUserResponseDto> LoginUser(LoginUserRequestDto loginUserRequestDto)
@@ -50,7 +55,13 @@ namespace HDISigorta.Persistence.Repositories.AppUser
                 user = await _userManager.FindByEmailAsync(loginUserRequestDto.UserNameOrEmail);
 
             if (user is null)
-                throw new NotFoundUserException();
+            {
+                IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("exception.json", optional: true, reloadOnChange: true)
+            .Build();
+
+                throw new NotFoundUserException(config["Exception:NotFoundUserException"]);
+            }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, loginUserRequestDto.Password, false);
 

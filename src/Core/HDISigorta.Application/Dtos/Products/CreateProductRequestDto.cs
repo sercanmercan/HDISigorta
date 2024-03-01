@@ -13,11 +13,11 @@
         //Tamir edilen parçası var mı
         public bool IsRepairedPart { get; set; }
 
-        //Değişen parçası maliyeti
-        public double ChangedPartCost { get; set; }
+        //Değişen veya tamir edilen parça maliyeti
+        public double RepairOrChangedPartCost { get; set; }
 
         //Tamir edilen parça maliyeti
-        public double RepairedPartCost { get; set; }
+        //public double RepairedPartCost { get; set; }
 
         //Satış zamanı
         //public DateTime? SellingTime { get; set; }
