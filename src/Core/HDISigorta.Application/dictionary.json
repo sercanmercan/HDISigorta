@@ -1,0 +1,13 @@
+{
+  "Exception": {
+    "NotFoundUserException": "Kullanıcı adı veya şifre hatalıdır...",
+    "UserCreateFailedException": "Kullanici oluşturulurken beklenmeyen bir hata olustu.",
+    "RequiredArea": "Lütfen zorunlu alanları doldurunuz.",
+    "ErrorOccured": "Bir hata olustu",
+    "NoProduct": "Böyle bir ürün yok."
+  },
+
+  "Dictionary": {
+    "AddProduct" :  "isminde ürün eklenmiştir"
+  }
+}
