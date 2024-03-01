@@ -1,9 +1,15 @@
 ﻿using AutoMapper;
+using HDISigorta.Application.Abstractions.Helper;
+using HDISigorta.Application.Abstractions.Hubs;
+using HDISigorta.Application.Dtos.Helper;
 using HDISigorta.Application.Dtos.Products;
+using HDISigorta.Application.Exceptions;
 using HDISigorta.Application.Repositories.Products;
 using HDISigorta.Domain.Entities.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace HDISigorta.API.Controllers
 {
@@ -15,14 +21,20 @@ namespace HDISigorta.API.Controllers
         private readonly IMapper _mapper;
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IProductReadRepository _productReadRepository;
+        private readonly IHelper _helper;
+        private readonly IProductHubService _productHubService;
         public ProductsController(
             IMapper mapper,
+            IHelper helper,
             IProductWriteRepository productWriteRepository,
-            IProductReadRepository productReadRepository)
+            IProductReadRepository productReadRepository,
+            IProductHubService productHubService)
         {
+            _mapper = mapper;
+            _helper = helper;
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
-            _mapper = mapper;
+            _productHubService = productHubService;
         }
 
         /// <summary>
@@ -59,13 +71,16 @@ namespace HDISigorta.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(CreateProductRequestDto request)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
+
             try
             {
                 if (!request.IsCheckValid())
                 {
-                    resultErrorMessage = "Lütfen zorunlu alanları doldurunuz.";
-                    throw new ArgumentException(resultErrorMessage);
+                    throw new RequiredAreaException(config["Exception:RequiredArea"]);
                 }
 
                 await _productWriteRepository.AddAsync(new()
@@ -76,17 +91,18 @@ namespace HDISigorta.API.Controllers
                     AgreementId = request.AgreementId,
                     IsChangedPart = request.IsChangedPart,
                     IsRepairedPart = request.IsRepairedPart,
-                    RepairedPartCost = request.RepairedPartCost,
-                    ChangedPartCost = request.ChangedPartCost,
-                    BuyingTime = DateTime.Now
+                    RepairOrChangedPartCost = request.RepairOrChangedPartCost,
+                    BuyingTime = DateTime.Now,
+                    ProductStatus = Domain.Entities.Enums.ProductStatusEnum.InStock
                 });
 
                 await _productWriteRepository.SaveAsync();
+                await _productHubService.ProductAddedMessageAsync($"{request.Name} {config["Dictionary:AddProduct"]}");
                 return Ok();
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
 
@@ -101,34 +117,63 @@ namespace HDISigorta.API.Controllers
         [HttpPut]
         public async Task<bool> UpdateAsync(UpdateProductRequestDto request)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
 
             try
             {
                 if (!request.IsCheckValid())
                 {
-                    resultErrorMessage = "Lütfen bilgileri giriniz.";
+                    resultErrorMessage = config["Exception:RequiredArea"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
-                Product product = await _productReadRepository.GetByIdAsync(request.Id, true);
+                Product? product = _productReadRepository.GetWhere(x => x.Id == request.Id, true).Include(x => x.ProductHistories).FirstOrDefault();
 
                 if (product is null)
                 {
-                    resultErrorMessage = "Böyle bir ürün yok.";
+                    resultErrorMessage = config["Exception:NoProduct"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
-                product.Name = request.Name;
-                product.BuyingPrice = request.BuyingPrice;
-                product.SellingPrice = request.SellingPrice;
-                product.AgreementId = request.AgreementId;
-                product.IsChangedPart = request.IsChangedPart;
-                product.IsRepairedPart = request.IsRepairedPart;
-                product.RepairedPartCost = request.RepairedPartCost;
-                product.ChangedPartCost = request.ChangedPartCost;
-                //product.ProfitCost = request.ProfitCost;
-                //product.ProfitMargin = request.ProfitMargin;
+                //RepairOrChangedPartCost güncellendiyse  hesaplama yapılacak.
+                if (request.RepairOrChangedPartCost > 0)
+                {
+                    var oldTotalRepairOrChangedPartCost = product.ProductHistories.Where(x => x.ProductId == request.Id).Select(x => x.TotalRepairOrChangedPartCost).LastOrDefault();
+
+                    ProfitabilityRequestDto profitabilityRequestDto = new()
+                    {
+                        BuyingPrice = request.BuyingPrice,
+                        SellingPrice = request.SellingPrice,
+                        TotalRepairOrChangedPartCost = oldTotalRepairOrChangedPartCost
+                    };
+
+                    ProductHistory productHistory = new()
+                    {
+                        ProductId = request.Id,
+                        ProfitCost = await _helper.CalculateProfitabilityCost(profitabilityRequestDto),
+                        ProfitMargin = await _helper.CalculateProfitabilityRatio(profitabilityRequestDto),
+                        RiskCost = await _helper.CalculateRiskCostRatio(new()
+                        {
+                            SellingPrice = request.SellingPrice,
+                            TotalRepairOrChangedPartCost = request.RepairOrChangedPartCost + product.RepairOrChangedPartCost
+                        }),
+                        RepairOrChangedPartCost = request.RepairOrChangedPartCost,
+                        TotalRepairOrChangedPartCost = request.RepairOrChangedPartCost + product.RepairOrChangedPartCost
+                    };
+
+                    product.ProductHistories.Add(productHistory);
+
+                    product.Name = request.Name;
+                    product.BuyingPrice = request.BuyingPrice;
+                    product.SellingPrice = request.SellingPrice;
+                    product.AgreementId = request.AgreementId;
+                    product.IsChangedPart = request.IsChangedPart;
+                    product.IsRepairedPart = request.IsRepairedPart;
+                    product.RepairOrChangedPartCost = request.RepairOrChangedPartCost;
+                }
 
                 _productWriteRepository.Update(product);
                 await _productWriteRepository.SaveAsync();
@@ -136,7 +181,7 @@ namespace HDISigorta.API.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
 
@@ -150,7 +195,10 @@ namespace HDISigorta.API.Controllers
         [HttpDelete("{id}")]
         public async Task<bool> DeleteProductAsync(Guid id)
         {
-            string resultErrorMessage = string.Empty;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
 
             try
             {
@@ -158,7 +206,7 @@ namespace HDISigorta.API.Controllers
 
                 if (product is null)
                 {
-                    resultErrorMessage = "Böyle bir ürün yok.";
+                    resultErrorMessage = config["Exception:NoProduct"];
                     throw new ArgumentException(resultErrorMessage);
                 }
 
@@ -170,7 +218,7 @@ namespace HDISigorta.API.Controllers
             }
             catch (Exception ex)
             {
-                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : "Bir hata olustu");
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
             }
         }
     }
