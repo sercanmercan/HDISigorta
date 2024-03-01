@@ -1,11 +1,7 @@
 ﻿using HDISigorta.Domain.Entities.Agreements;
 using HDISigorta.Domain.Entities.Common;
-using HDISigorta.Domain.Entities.Customers;
 using HDISigorta.Domain.Entities.Dealers;
 using HDISigorta.Domain.Entities.Identities;
-using HDISigorta.Domain.Entities.Maintenance;
-using HDISigorta.Domain.Entities.MaintenanceCenters;
-using HDISigorta.Domain.Entities.Personnels;
 using HDISigorta.Domain.Entities.Products;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +17,8 @@ namespace HDISigorta.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductHistory> ProductHistories { get; set; }
         public DbSet<AppUser> Users { get; set; }
-        public DbSet<Customer> Customers { get; set; }
+        //public DbSet<Customer> Customers { get; set; }
         public DbSet<Dealer> Dealers { get; set; }
-        public DbSet<Personnel> Personnels { get; set; }
-        public DbSet<MaintenanceCenter> MaintenanceCenters { get; set; }
-        public DbSet<Maintenance> Maintenances { get; set; }
         public DbSet<Agreement> Agreements { get; set; }
 
 

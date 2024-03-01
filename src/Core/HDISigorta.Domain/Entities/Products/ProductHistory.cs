@@ -8,7 +8,6 @@ namespace HDISigorta.Domain.Entities.Products
         public Product Product { get; set; }
         [ForeignKey(nameof(ProductId))]
         public Guid ProductId { get; set; }
-        //public ProductStatusEnum ProductStatus { get; set; }
 
         //Kar marjı
         public double ProfitMargin { get; set; }

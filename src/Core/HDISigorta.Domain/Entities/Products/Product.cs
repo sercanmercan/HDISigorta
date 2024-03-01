@@ -11,7 +11,6 @@ namespace HDISigorta.Domain.Entities.Products
         public double BuyingPrice { get; set; }
         public double SellingPrice { get; set; }
         public ProductStatusEnum ProductStatus { get; set; }
-        //public bool IsSold { get; set; }
 
         //Değişen parçası var mı
         public bool IsChangedPart { get; set; }
@@ -33,14 +32,7 @@ namespace HDISigorta.Domain.Entities.Products
         [ForeignKey(nameof(AgreementId))]
         public Guid AgreementId { get; set; }
         public virtual ICollection<ProductHistory> ProductHistories { get; set; } = new List<ProductHistory>();
+        public Guid DealerId { get; set; }
 
-        //Kar marjı
-        //public double ProfitMargin  { get; set; }
-
-        ////Kar maliyeti
-        //public double ProfitCost { get; set; }
-
-        ////Garanti risk maliyeti
-        //public double RiskCost { get; set; }
     }
 }
