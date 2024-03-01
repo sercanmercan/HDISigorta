@@ -25,19 +25,23 @@ namespace HDISigorta.Persistence.Repositories.AppUser
 
         public async Task<CreateUserCommandResponseDto> CreateAsync(CreateUserCommandRequestDto request)
         {
+            Guid id = Guid.NewGuid();
+
             IdentityResult result = await _userManager.CreateAsync(new()
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 UserName = request.UserName,
                 Email = request.Email,
-                FullName = request.NameSurname
+                FullName = request.NameSurname,
+                DealerId = request.DealerId
             }, request.Password);
 
             if (result.Succeeded)
                 return new()
                 {
                     Succeeded = true,
-                    Message = "Kullanıcı basariyla olusturulmustur."
+                    Message = "Kullanıcı basariyla olusturulmustur.",
+                    Id = id
                 };
 
             IConfiguration config = new ConfigurationBuilder()

@@ -5,12 +5,13 @@ using HDISigorta.Application.Dtos.Helper;
 using HDISigorta.Application.Dtos.Products;
 using HDISigorta.Application.Exceptions;
 using HDISigorta.Application.Repositories.Products;
+using HDISigorta.Domain.Entities.Identities;
 using HDISigorta.Domain.Entities.Products;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace HDISigorta.API.Controllers
 {
@@ -24,18 +25,21 @@ namespace HDISigorta.API.Controllers
         private readonly IProductReadRepository _productReadRepository;
         private readonly IHelper _helper;
         private readonly IProductHubService _productHubService;
+        private readonly UserManager<AppUser> _userManager;
         public ProductsController(
             IMapper mapper,
             IHelper helper,
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
-            IProductHubService productHubService)
+            IProductHubService productHubService,
+            UserManager<AppUser> userManager)
         {
             _mapper = mapper;
             _helper = helper;
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
             _productHubService = productHubService;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -43,11 +47,31 @@ namespace HDISigorta.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public List<ProductResponseDto> GetAllProduct()
+        public async Task<List<ProductResponseDto>> GetAllProduct(GetAllProductRequestDto getAllProductRequestDto)
         {
-            List<Product> productList = _productReadRepository.GetAll(false).ToList();
-            List<ProductResponseDto> map = _mapper.Map<List<Product>, List<ProductResponseDto>>(productList);
-            return map;
+            string? resultErrorMessage = string.Empty;
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
+
+            try
+            {
+                AppUser? user = await _userManager.FindByIdAsync(getAllProductRequestDto.UserId.ToString());
+
+                if (user is  null)
+                {
+                    resultErrorMessage = config["Exception:NoUser"];
+                    throw new ArgumentException(resultErrorMessage);
+                }
+
+                List<Product> productList = _productReadRepository.GetAll(false).Where(x =>x.DealerId == user.DealerId).ToList();
+                List<ProductResponseDto> map = _mapper.Map<List<Product>, List<ProductResponseDto>>(productList);
+                return map;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(!string.IsNullOrWhiteSpace(resultErrorMessage) ? resultErrorMessage : config["Exception:ErrorOccured"]);
+            }
         }
 
         /// <summary>
@@ -81,7 +105,8 @@ namespace HDISigorta.API.Controllers
             {
                 if (!request.IsCheckValid())
                 {
-                    throw new RequiredAreaException(config["Exception:RequiredArea"]);
+                    resultErrorMessage = config["Exception:RequiredArea"];
+                    throw new RequiredAreaException(resultErrorMessage);
                 }
 
                 await _productWriteRepository.AddAsync(new()
@@ -94,7 +119,8 @@ namespace HDISigorta.API.Controllers
                     IsRepairedPart = request.IsRepairedPart,
                     RepairOrChangedPartCost = request.RepairOrChangedPartCost,
                     BuyingTime = DateTime.Now,
-                    ProductStatus = Domain.Entities.Enums.ProductStatusEnum.InStock
+                    ProductStatus = Domain.Entities.Enums.ProductStatusEnum.InStock,
+                    CreatorId = request.CreatorId
                 });
 
                 await _productWriteRepository.SaveAsync();

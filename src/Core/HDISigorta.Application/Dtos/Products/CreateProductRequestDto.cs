@@ -27,8 +27,8 @@
 
         //Garanti id si
         public Guid AgreementId { get; set; }
-        //public ICollection<ProductHistory> ProductHistories { get; set; }
-
+        public Guid CreatorId { get; set; }
+        
         //Kar marjı
         //public double ProfitMargin { get; set; }
 
