@@ -4,7 +4,8 @@
     "UserCreateFailedException": "Kullanici oluşturulurken beklenmeyen bir hata olustu.",
     "RequiredArea": "Lütfen zorunlu alanları doldurunuz.",
     "ErrorOccured": "Bir hata olustu",
-    "NoProduct": "Böyle bir ürün yok."
+    "NoProduct": "Böyle bir ürün yok.",
+    "ErrorIdentity": "Kimlik dogrulama hatasi"
   },
 
   "Dictionary": {

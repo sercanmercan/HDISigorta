@@ -41,7 +41,7 @@ namespace HDISigorta.Persistence.Repositories.AppUser
                 };
 
             IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("exception.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
             .Build();
 
             throw new UserCreateFailedException(config["Exception:UserCreateFailedException"]);
@@ -50,18 +50,15 @@ namespace HDISigorta.Persistence.Repositories.AppUser
         public async Task<LoginUserResponseDto> LoginUser(LoginUserRequestDto loginUserRequestDto)
         {
             Domain.Entities.Identities.AppUser user = await _userManager.FindByNameAsync(loginUserRequestDto.UserNameOrEmail);
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("dictionary.json", optional: true, reloadOnChange: true)
+            .Build();
 
             if (user is null)
                 user = await _userManager.FindByEmailAsync(loginUserRequestDto.UserNameOrEmail);
 
             if (user is null)
-            {
-                IConfiguration config = new ConfigurationBuilder()
-            .AddJsonFile("exception.json", optional: true, reloadOnChange: true)
-            .Build();
-
                 throw new NotFoundUserException(config["Exception:NotFoundUserException"]);
-            }
 
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, loginUserRequestDto.Password, false);
 
@@ -78,7 +75,7 @@ namespace HDISigorta.Persistence.Repositories.AppUser
 
             return new LoginUserErrorResponseDto()
             {
-                Message = "Kimlik dogrulama hatasi"
+                Message = config["Exception:ErrorIdentity"]
             };
         }
     }
