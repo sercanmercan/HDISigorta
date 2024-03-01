@@ -1,12 +1,14 @@
 ﻿using HDISigorta.Application.Abstractions.Helper;
 using HDISigorta.Application.Repositories.Agreements;
 using HDISigorta.Application.Repositories.AppUser;
+using HDISigorta.Application.Repositories.Dealers;
 using HDISigorta.Application.Repositories.ProductHistory;
 using HDISigorta.Application.Repositories.Products;
 using HDISigorta.Domain.Entities.Identities;
 using HDISigorta.Persistence.Contexts;
 using HDISigorta.Persistence.Repositories.Agreements;
 using HDISigorta.Persistence.Repositories.AppUser;
+using HDISigorta.Persistence.Repositories.Dealers;
 using HDISigorta.Persistence.Repositories.Product;
 using HDISigorta.Persistence.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +38,8 @@ namespace HDISigorta.Persistence
             services.AddScoped<IAgreementWriteRepository, AgreementWriteRepository>();
             services.AddScoped<IHelper, Helper.Helper>();
             services.AddScoped<IProductHistoryReadRepository, ProductHistoryReadRepository>();
+            services.AddScoped<IDealerReadRepository, DealerReadRepository>();
+            services.AddScoped<IDealerWriteRepository, DealerWriteRepository>();
         }
     }
 }
