@@ -22,6 +22,7 @@
 		<ProjectReference Include="..\..\Core\HDISigorta.Application\HDISigorta.Application.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\HDISigorta.Infrastructure\HDISigorta.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\HDISigorta.Persistence\HDISigorta.Persistence.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\HDISigorta.SignalR\HDISigorta.SignalR.csproj" />
 	</ItemGroup>
 
 </Project>
